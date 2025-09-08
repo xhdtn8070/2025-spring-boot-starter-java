@@ -1,0 +1,97 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.5.5'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'org.tikim'
+version = '0.0.1-SNAPSHOT'
+description = 'demo'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+configurations {
+    // Lombok/APT 세팅
+    compileOnly { extendsFrom annotationProcessor }
+    testCompileOnly { extendsFrom testAnnotationProcessor }
+
+    // Logback 제거 → Log4j2 사용
+    all {
+        exclude module: 'spring-boot-starter-logging'
+    }
+}
+
+dependencies {
+    // Spring starters
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-log4j2'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    // QueryDSL (Jakarta for Boot 3)
+    implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+    annotationProcessor 'com.querydsl:querydsl-apt:5.0.0:jakarta'
+
+    // Lombok
+    compileOnly 'org.projectlombok:lombok:1.18.34'
+    annotationProcessor 'org.projectlombok:lombok:1.18.34'
+    testCompileOnly 'org.projectlombok:lombok:1.18.34'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.34'
+
+    // Jakarta APIs — 컴파일러용(AOT/APT)에도 필요
+    implementation 'jakarta.annotation:jakarta.annotation-api:2.1.1'
+    implementation 'jakarta.persistence:jakarta.persistence-api:3.1.0'
+    annotationProcessor 'jakarta.annotation:jakarta.annotation-api:2.1.1'
+    annotationProcessor 'jakarta.persistence:jakarta.persistence-api:3.1.0'
+
+    // 추가 라이브러리
+    implementation 'com.google.code.gson:gson'
+    implementation 'commons-io:commons-io:2.16.1'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
+
+    // AWS SDK
+    implementation 'software.amazon.awssdk:sqs:2.25.27'
+    implementation 'software.amazon.awssdk:sns:2.25.27'
+
+    // JPA/Hibernate
+    implementation 'org.hibernate.orm:hibernate-core:6.4.4.Final'
+
+    // DB & Migration
+    implementation 'org.flywaydb:flyway-core'
+    implementation 'org.flywaydb:flyway-mysql'
+    runtimeOnly 'com.mysql:mysql-connector-j'
+
+    // Redis
+    implementation 'org.redisson:redisson-spring-boot-starter:3.27.2'
+
+    // Test
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.testcontainers:localstack:1.21.0'
+    testImplementation 'org.testcontainers:testcontainers:1.20.6'
+    testImplementation 'org.testcontainers:junit-jupiter:1.20.6'
+    testImplementation 'org.testcontainers:mysql:1.20.6'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.withType(Test) {
+    useJUnitPlatform()
+    systemProperty 'spring.profiles.active', 'test'
+}
+
+// Apple Silicon(Mac aarch64) 전용 Netty 네이티브
+if (org.gradle.internal.os.OperatingSystem.current().isMacOsX()
+        && System.getProperty('os.arch') == 'aarch64') {
+    dependencies {
+        runtimeOnly 'io.netty:netty-resolver-dns-native-macos:4.1.109.Final:osx-aarch_64'
+    }
+}

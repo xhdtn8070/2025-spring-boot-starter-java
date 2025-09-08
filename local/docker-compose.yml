@@ -1,0 +1,82 @@
+# version: "3.8" # Docker Compose V2부터 이 줄은 제거하거나 주석 처리
+services:
+  mysql:
+    image: mysql:8.4.3
+    container_name: tikim_mysql_local
+    ports:
+      - "33060:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=1q2w3e4r
+      - MYSQL_DATABASE=tikim_local
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --default-time-zone=Asia/Seoul
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p1q2w3e4r"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  valkey:
+    image: valkey/valkey:8.0
+    container_name: tikim_valkey_local
+    ports:
+      - "63790:6379"
+    healthcheck:
+      test: ["CMD", "valkey-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  localstack:
+    image: localstack/localstack:4.4
+    container_name: tikim_localstack
+    ports:
+      - "4566:4566"
+    environment:
+      - SERVICES=sns,sqs
+      - AWS_DEFAULT_REGION=ap-northeast-2
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+      - DOCKER_HOST=unix:///var/run/docker.sock
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - localstack-data:/var/lib/localstack
+    healthcheck:
+      test: ["CMD", "awslocal", "sqs", "list-queues"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+
+  terraform_initializer:
+    image: hashicorp/terraform:latest
+    container_name: tikim_terraform_initializer
+    environment:
+      # LocalStack용 테스트 크레덴셜
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+
+      # region 설정 - Terraform provider에서 사용
+      - AWS_DEFAULT_REGION=ap-northeast-2
+      # 일부 도구 호환성을 위해 남겨둠 (옵션)
+      - AWS_REGION=ap-northeast-2
+      - AWS_ENDPOINT_URL=http://localstack:4566
+      - AWS_ENDPOINT_URL_SQS=http://localstack:4566
+      - AWS_ENDPOINT_URL_SNS=http://localstack:4566
+    volumes:
+      - ./terraform:/app/terraform
+    working_dir: /app/terraform
+    entrypoint: sh
+    command: -c "terraform init -backend=false && terraform apply -auto-approve"
+    depends_on:
+      localstack:
+        condition: service_healthy
+
+
+volumes:
+  localstack-data:

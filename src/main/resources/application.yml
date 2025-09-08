@@ -1,0 +1,26 @@
+spring:
+  profiles:
+    active: local
+  application:
+    name: tikim-api
+  thymeleaf:
+    enabled: true
+    cache: false
+    prefix: classpath:/templates/
+    suffix: .html
+
+server:
+  port: 80
+  shutdown: graceful
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+openapi:
+  info:
+    title: "TIKIM API"
+    version: "1.0.0"
+    description: "TIKIM API Documentation"
