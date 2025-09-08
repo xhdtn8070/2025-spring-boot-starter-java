@@ -1,4 +1,4 @@
-package org.tikim.sample.redisson.stream;
+package org.tikim.sample.redis.stream;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.tikim.sample.container.SpringIntegrationTestSupport;
 
 import java.time.Duration;
-import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;

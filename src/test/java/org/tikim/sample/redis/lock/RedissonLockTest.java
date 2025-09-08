@@ -1,4 +1,4 @@
-package org.tikim.sample.redisson.lock;
+package org.tikim.sample.redis.lock;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

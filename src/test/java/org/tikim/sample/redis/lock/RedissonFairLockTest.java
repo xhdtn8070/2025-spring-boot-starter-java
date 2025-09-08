@@ -1,4 +1,4 @@
-package org.tikim.sample.redisson.lock;
+package org.tikim.sample.redis.lock;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,7 +9,6 @@ import org.tikim.sample.container.SpringIntegrationTestSupport;
 
 import java.util.List;
 import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import static org.assertj.core.api.Assertions.assertThat;

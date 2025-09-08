@@ -1,4 +1,4 @@
-package org.tikim.sample.redisson.lua;
+package org.tikim.sample.redis.lua;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

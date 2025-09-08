@@ -1,4 +1,4 @@
-package org.tikim.sample.redisson.value;
+package org.tikim.sample.redis.value;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

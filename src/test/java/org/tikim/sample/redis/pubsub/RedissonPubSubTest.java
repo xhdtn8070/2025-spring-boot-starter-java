@@ -1,4 +1,4 @@
-package org.tikim.sample.redisson.pubsub;
+package org.tikim.sample.redis.pubsub;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
