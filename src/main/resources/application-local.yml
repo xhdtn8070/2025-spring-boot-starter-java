@@ -10,7 +10,9 @@ aws:
       access-key: test
       secret-key: test
     topics:
-      poc-chat-message-sns: arn:aws:sns:ap-northeast-2:000000000000:local-poc-chat-message-sns
+      # LocalStackTestContainer.register()에서 주입한 키와 맞춤
+      board-reply: arn:aws:sns:ap-northeast-2:000000000000:local-board-reply-sns
+
   sqs:
     region: ap-northeast-2
     endpoint: http://localhost:4566
@@ -18,9 +20,9 @@ aws:
       access-key: test
       secret-key: test
     queues:
-      poc-chat-sqs-websocket: http://sqs.ap-northeast-2.localhost.localstack.cloud:4566/000000000000/local-poc-chat-sqs-websocket
-      poc-chat-sqs-push: http://sqs.ap-northeast-2.localhost.localstack.cloud:4566/000000000000/local-poc-chat-sqs-push
-      poc-chat-sqs-confirm: http://sqs.ap-northeast-2.localhost.localstack.cloud:4566/000000000000/local-poc-chat-sqs-confirm
+      # LocalStackTestContainer.register()에서 주입한 키와 맞춤
+      post-notify: http://sqs.ap-northeast-2.localhost.localstack.cloud:4566/000000000000/local-board-post-notify-sqs
+      reply-action: http://sqs.ap-northeast-2.localhost.localstack.cloud:4566/000000000000/local-board-reply-action-sqs
 
 spring:
   datasource:
@@ -29,20 +31,19 @@ spring:
     password: 1q2w3e4r
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
-      # 커넥션 풀 최소/최대 크기
       minimum-idle: 2
       maximum-pool-size: 10
-
-      # 커넥션 검사·유효성
       connection-test-query: SELECT 1
-      idle-timeout: 600000       # 10분
-      max-lifetime: 1800000      # 30분
+      idle-timeout: 600000
+      max-lifetime: 1800000
+
   flyway:
     enabled: true
     baseline-on-migrate: true
     baseline-version: 0
     locations: classpath:db/migration
     encoding: UTF-8
+
   jpa:
     open-in-view: false
     hibernate:
@@ -60,4 +61,3 @@ redisson:
   password:
   timeout: 3000
   use-ssl: false
-

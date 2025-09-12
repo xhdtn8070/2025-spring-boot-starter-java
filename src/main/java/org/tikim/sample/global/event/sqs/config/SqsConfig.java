@@ -1,5 +1,6 @@
 package org.tikim.sample.global.event.sqs.config;
 
+import io.awspring.cloud.sqs.config.SqsMessageListenerContainerFactory;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -40,4 +41,5 @@ public class SqsConfig {
     private static boolean hasText(String s) {
         return s != null && !s.trim().isEmpty();
     }
+
 }

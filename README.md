@@ -131,7 +131,7 @@
   
   # SNS 토픽 구독 연결 상태 확인
     # 'local-poc-chat-message-sns' 토픽의 ARN을 조회하여 사용합니다.
-    TOPIC_ARN=$(awslocal sns list-topics --query 'Topics[?contains(TopicArn, `local-poc-chat-message-sns`)].TopicArn' --output text)
+    TOPIC_ARN=$(awslocal sns list-topics --query 'Topics[?contains(TopicArn, `local-board-reply-sns`)].TopicArn' --output text)
     awslocal sns list-subscriptions-by-topic --topic-arn "$TOPIC_ARN"
     ```
 ---

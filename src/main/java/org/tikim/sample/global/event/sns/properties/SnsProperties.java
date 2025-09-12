@@ -1,5 +1,6 @@
 package org.tikim.sample.global.event.sns.properties;
 
+import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -11,6 +12,9 @@ public class SnsProperties {
     private String region;
     private String endpoint; // nullable
     private Credentials credentials;
+
+    // 큐 이름 -> URL 매핑 (post-notify, reply-action)
+    private Map<String, String> topics;
 
     @Getter
     @Setter
