@@ -39,6 +39,7 @@ public class PostDslDslRepositoryImpl implements PostDslRepository {
                         post.id,
                         post.title,
                         post.createdAt,
+                        post.updatedAt,
                         reply.id.countDistinct()
                 ))
                 .from(post)
@@ -60,59 +61,4 @@ public class PostDslDslRepositoryImpl implements PostDslRepository {
         return new PageImpl<>(content, pageable, total == null ? 0 : total);
     }
 
-    @Override
-    public Optional<Post> findWithReplies(Long postId) {
-        // fetch join + distinct(중복 제거)
-        Post result = queryFactory
-                .selectFrom(post)
-                .leftJoin(post.replies, reply).fetchJoin()
-                .where(post.id.eq(postId))
-                .distinct()
-                .fetchOne();
-
-        return Optional.ofNullable(result);
-    }
-
-    @Override
-    public List<PostSummaryDto> topNByReplyCount(int limit) {
-        return queryFactory
-                .select(constructor(
-                        PostSummaryDto.class,
-                        post.id,
-                        post.title,
-                        post.createdAt,
-                        reply.id.countDistinct()
-                ))
-                .from(post)
-                .leftJoin(post.replies, reply)
-                .groupBy(post.id, post.title, post.createdAt)
-                .orderBy(reply.id.countDistinct().desc(), post.createdAt.desc())
-                .limit(limit)
-                .fetch();
-    }
-
-    @Override
-    public long countByKeyword(String keyword) {
-        BooleanBuilder where = new BooleanBuilder();
-        if (keyword != null && !keyword.isBlank()) {
-            where.and(post.title.containsIgnoreCase(keyword)
-                    .or(post.content.containsIgnoreCase(keyword)));
-        }
-        Long cnt = queryFactory
-                .select(post.id.count())
-                .from(post)
-                .where(where)
-                .fetchOne();
-        return cnt == null ? 0 : cnt;
-    }
-
-    @Override
-    public boolean existsByTitle(String title) {
-        Integer one = queryFactory
-                .selectOne()
-                .from(post)
-                .where(post.title.eq(title))
-                .fetchFirst();
-        return one != null;
-    }
 }

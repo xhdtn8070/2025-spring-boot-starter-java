@@ -2,10 +2,14 @@
 package org.tikim.sample.domain.board.post.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.AccessLevel;
 import org.hibernate.annotations.SoftDelete;
+import org.tikim.sample.domain.board.post.service.domain.dto.PostCreateDomainRequest;
+import org.tikim.sample.domain.board.post.service.domain.dto.PostUpdateDomainRequest;
 import org.tikim.sample.domain.board.reply.entity.Reply;
 import org.tikim.sample.global.jpa.entity.BaseEntity;
 
@@ -14,6 +18,8 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "tb_post")
 @SoftDelete(columnName = "is_deleted") // deleted = true면 조회에서 제외
@@ -32,4 +38,20 @@ public class Post extends BaseEntity {
     )
     private List<Reply> replies = new ArrayList<>();
 
+    // ---- 정적 팩토리 ----
+    public static Post of(String title, String content) {
+        return Post.builder()
+            .title(title)
+            .content(content)
+            .build();
+    }
+
+    public static Post of(PostCreateDomainRequest req) {
+        return of(req.title(), req.content());
+    }
+
+    public void update(PostUpdateDomainRequest req) {
+        this.title = req.title();
+        this.content = req.content();
+    }
 }
