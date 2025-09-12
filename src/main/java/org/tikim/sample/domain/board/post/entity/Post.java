@@ -25,6 +25,9 @@ import java.util.List;
 @SoftDelete(columnName = "is_deleted") // deleted = true면 조회에서 제외
 public class Post extends BaseEntity {
 
+    @Column(name = "author_id", nullable = false)
+    private Long authorId;
+
     @Column(name = "title", nullable = false, length = 200)
     private String title;
 
@@ -38,16 +41,12 @@ public class Post extends BaseEntity {
     )
     private List<Reply> replies = new ArrayList<>();
 
-    // ---- 정적 팩토리 ----
-    public static Post of(String title, String content) {
-        return Post.builder()
-            .title(title)
-            .content(content)
-            .build();
-    }
-
     public static Post of(PostCreateDomainRequest req) {
-        return of(req.title(), req.content());
+        return Post.builder()
+            .authorId(req.authorId())
+            .title(req.title())
+            .content(req.content())
+            .build();
     }
 
     public void update(PostUpdateDomainRequest req) {

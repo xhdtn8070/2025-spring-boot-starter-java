@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotNull;
 
 public record ReplyCreateDomainRequest(
     @NotNull
+    Long authorId,
+    @NotNull
     Long postId,
     @NotBlank
     String content

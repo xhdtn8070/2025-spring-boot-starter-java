@@ -6,11 +6,13 @@ import org.tikim.sample.domain.board.reply.service.domain.dto.ReplyDomainRespons
 
 public record ReplyServiceResponse(
     Long id,
+    Long authorId,
     Long postId,
     String content,
     LocalDateTime createdAt
 ) {
+
     public static ReplyServiceResponse of(ReplyDomainResponse d) {
-        return new ReplyServiceResponse(d.id(), d.postId(), d.content(), d.createdAt());
+        return new ReplyServiceResponse(d.id(), d.authorId(), d.postId(), d.content(), d.createdAt());
     }
 }

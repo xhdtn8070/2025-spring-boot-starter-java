@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 
 public record PostSummaryDto(
     Long id,
+    Long authorId,
     String title,
     LocalDateTime createdAt,
     LocalDateTime updatedAt,

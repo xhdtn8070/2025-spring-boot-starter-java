@@ -37,6 +37,7 @@ public class PostDslDslRepositoryImpl implements PostDslRepository {
                 .select(constructor(
                         PostSummaryDto.class,
                         post.id,
+                        post.authorId,
                         post.title,
                         post.createdAt,
                         post.updatedAt,

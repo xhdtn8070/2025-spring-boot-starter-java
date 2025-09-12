@@ -38,4 +38,15 @@ public class OutboxEvent extends BaseEntity {
 
     @Column(name = "error_reason", columnDefinition = "TEXT")
     private String errorReason;
+
+    //성공 했을때 부르는 함수
+    public void markAsSuccess() {
+        this.isSuccess = true;
+        this.errorReason = null;
+    }
+    //실패 했을때 부르는 함수
+    public void markAsFailed(String errorReason) {
+        this.isSuccess = false;
+        this.errorReason = errorReason;
+    }
 }

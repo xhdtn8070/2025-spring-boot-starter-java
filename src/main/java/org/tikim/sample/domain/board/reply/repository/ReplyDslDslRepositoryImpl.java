@@ -30,6 +30,7 @@ public class ReplyDslDslRepositoryImpl implements ReplyDslRepository {
                 .select(constructor(
                         ReplySummaryDto.class,
                         reply.id,
+                        reply.authorId,
                         reply.post.id,
                         reply.content,
                         reply.createdAt

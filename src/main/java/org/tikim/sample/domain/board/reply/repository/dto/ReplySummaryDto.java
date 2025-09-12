@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 
 public record ReplySummaryDto(
         Long id,
+        Long authorId,
         Long postId,
         String content,
         LocalDateTime createdAt

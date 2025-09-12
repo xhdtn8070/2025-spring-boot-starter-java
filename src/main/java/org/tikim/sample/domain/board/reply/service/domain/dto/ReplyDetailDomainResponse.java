@@ -6,6 +6,7 @@ import org.tikim.sample.domain.board.reply.entity.Reply;
 
 public record ReplyDetailDomainResponse(
     Long id,
+    Long authorId,
     Long postId,
     String content,
     LocalDateTime createdAt,
@@ -14,10 +15,15 @@ public record ReplyDetailDomainResponse(
     public static ReplyDetailDomainResponse of(Reply r) {
         return new ReplyDetailDomainResponse(
             r.getId(),
+            r.getAuthorId(),
             r.getPost().getId(),
             r.getContent(),
             r.getCreatedAt(),
             r.getUpdatedAt()
         );
+    }
+
+    public boolean isWriter(Long userId) {
+        return this.authorId.equals(userId);
     }
 }

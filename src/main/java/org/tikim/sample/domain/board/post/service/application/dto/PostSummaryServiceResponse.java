@@ -6,6 +6,7 @@ import org.tikim.sample.domain.board.post.service.domain.dto.PostSearchDomainRes
 
 public record PostSummaryServiceResponse(
     Long id,
+    Long authorId,
     String title,
     LocalDateTime createdAt,
     LocalDateTime updatedAt,
@@ -17,6 +18,7 @@ public record PostSummaryServiceResponse(
     ) {
         return new PostSummaryServiceResponse(
             dto.id(),
+            dto.authorId(),
             dto.title(),
             dto.createdAt(),
             dto.updatedAt(),

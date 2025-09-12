@@ -12,6 +12,8 @@ public enum ErrorMessage {
     USER_NOT_EXIST("존재하지 않는 사용자입니다.", HttpStatus.BAD_REQUEST),
     POST_NOT_EXIST("존재하지 않는 게시글입니다.", HttpStatus.BAD_REQUEST),
     REPLY_NOT_EXIST("존재하지 않는 댓글입니다.", HttpStatus.BAD_REQUEST),
+    WRITER_NOT_MATCH("작성자가 일치하지 않습니다.", HttpStatus.FORBIDDEN),
+    INVALID_AUTHORIZATION_HEADER("Authorization 헤더가 올바르지 않습니다.", HttpStatus.BAD_REQUEST)
     ;
 
     private final String errorMessage;

@@ -6,6 +6,7 @@ import org.tikim.sample.domain.board.post.repository.dto.PostSummaryDto;
 
 public record PostSearchDomainResponse(
     Long id,
+    Long authorId,
     String title,
     LocalDateTime createdAt,
     LocalDateTime updatedAt,
@@ -17,6 +18,7 @@ public record PostSearchDomainResponse(
     ) {
         return new PostSearchDomainResponse(
             dto.id(),
+            dto.authorId(),
             dto.title(),
             dto.createdAt(),
             dto.updatedAt(),

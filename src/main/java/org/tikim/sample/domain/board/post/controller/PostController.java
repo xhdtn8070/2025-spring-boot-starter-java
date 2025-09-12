@@ -14,6 +14,7 @@ import org.tikim.sample.domain.board.post.controller.dto.response.PostDetailCont
 import org.tikim.sample.domain.board.post.controller.dto.response.PostSummaryControllerResponse;
 import org.tikim.sample.domain.board.post.service.application.PostApplicationService;
 import org.tikim.sample.domain.board.post.service.application.dto.*;
+import org.tikim.sample.global.auth.dto.LoggedInUser;
 import org.tikim.sample.global.response.dto.ApiResponse;
 
 @RestController
@@ -24,18 +25,21 @@ public class PostController {
     private final PostApplicationService postAppService;
 
     @PostMapping
-    public ResponseEntity<ApiResponse<Void>> create(@RequestBody @Valid PostCreateControllerRequest req) {
-        postAppService.create(new PostCreateServiceRequest(req.title(), req.content()));
+    public ResponseEntity<ApiResponse<Void>> create(
+        @LoggedInUser Long userId,
+        @RequestBody @Valid PostCreateControllerRequest req) {
+        postAppService.create(userId,new PostCreateServiceRequest(req.title(), req.content()));
         // NOTE: ApiResponse.success(data, status)는 현재 status를 반영하지 않고 200을 고정 사용합니다.
         return ApiResponse.toResponseEntity(ApiResponse.success(HttpStatus.CREATED));
     }
 
     @PutMapping("/{postId}")
     public ResponseEntity<ApiResponse<Void>> update(
+        @LoggedInUser Long userId,
         @PathVariable Long postId,
         @RequestBody @Valid PostUpdateControllerRequest req
     ) {
-        postAppService.update(new PostUpdateServiceRequest(postId, req.title(), req.content()));
+        postAppService.update(userId,new PostUpdateServiceRequest(postId, req.title(), req.content()));
         return ApiResponse.toResponseEntity(ApiResponse.success(HttpStatus.OK));
     }
 
@@ -56,6 +60,7 @@ public class PostController {
         Page<PostSummaryControllerResponse> mapped = page.map(s ->
             new PostSummaryControllerResponse(
                 s.id(),
+                s.authorId(),
                 s.title(),
                 s.createdAt(),
                 s.updatedAt(),

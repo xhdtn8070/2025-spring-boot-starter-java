@@ -7,9 +7,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.tikim.sample.domain.board.post.exception.PostException;
 import org.tikim.sample.domain.board.post.service.application.dto.*;
 import org.tikim.sample.domain.board.post.service.domain.PostDomainService;
 import org.tikim.sample.domain.board.post.service.domain.dto.*;
+import org.tikim.sample.global.exception.enums.CriticalLevel;
+import org.tikim.sample.global.exception.enums.ErrorMessage;
 
 @Service
 @RequiredArgsConstructor
@@ -18,12 +21,16 @@ public class PostApplicationService {
     private final PostDomainService postDomainService;
 
     @Transactional
-    public void create(PostCreateServiceRequest req) {
-        postDomainService.create(new PostCreateDomainRequest(req.title(), req.content()));
+    public void create(Long userId, PostCreateServiceRequest req) {
+        postDomainService.create(new PostCreateDomainRequest(userId, req.title(), req.content()));
     }
 
     @Transactional
-    public void update(PostUpdateServiceRequest req) {
+    public void update(Long userId, PostUpdateServiceRequest req) {
+        PostDetailDomainResponse d = postDomainService.get(req.postId());
+        if (!d.isWriter(userId)) {
+            throw new PostException(ErrorMessage.WRITER_NOT_MATCH, CriticalLevel.NON_CRITICAL);
+        }
         postDomainService.update(
             req.postId(),
             new PostUpdateDomainRequest(req.title(), req.content())

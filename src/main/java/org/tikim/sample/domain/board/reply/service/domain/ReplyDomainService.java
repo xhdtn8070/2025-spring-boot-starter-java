@@ -60,6 +60,6 @@ public class ReplyDomainService {
     public Page<ReplyDomainResponse> search(ReplySearchDomainRequest req) {
         ValidationUtil.validate(req);
         return replyDslRepository.findPageByPostId(req.postId(), req.pageable())
-            .map(s -> new ReplyDomainResponse(s.id(), s.postId(), s.content(), s.createdAt()));
+            .map(s -> new ReplyDomainResponse(s.id(), s.authorId(), s.postId(), s.content(), s.createdAt()));
     }
 }

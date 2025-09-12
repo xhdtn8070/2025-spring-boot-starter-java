@@ -22,6 +22,9 @@ import org.tikim.sample.global.jpa.entity.BaseEntity;
 @SoftDelete(columnName = "is_deleted")
 public class Reply extends BaseEntity {
 
+    @Column(name = "author_id", nullable = false)
+    private Long authorId;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "post_id", nullable = false)
     private Post post;
@@ -33,6 +36,7 @@ public class Reply extends BaseEntity {
     // 정적 팩토리
     public static Reply of(Post post, ReplyCreateDomainRequest req) {
         return Reply.builder()
+                .authorId(req.authorId())
                 .post(post)
                 .content(req.content())
                 .build();

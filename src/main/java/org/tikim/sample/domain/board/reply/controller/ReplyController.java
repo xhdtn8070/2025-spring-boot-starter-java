@@ -14,6 +14,7 @@ import org.tikim.sample.domain.board.reply.controller.dto.request.ReplyUpdateCon
 import org.tikim.sample.domain.board.reply.controller.dto.response.ReplyControllerResponse;
 import org.tikim.sample.domain.board.reply.service.application.ReplyApplicationService;
 import org.tikim.sample.domain.board.reply.service.application.dto.*;
+import org.tikim.sample.global.auth.dto.LoggedInUser;
 import org.tikim.sample.global.response.dto.ApiResponse;
 
 @RestController
@@ -26,20 +27,22 @@ public class ReplyController {
     // Create
     @PostMapping("/posts/{postId}/replies")
     public ResponseEntity<ApiResponse<Void>> create(
+        @LoggedInUser Long userId,
         @PathVariable Long postId,
         @RequestBody @Valid ReplyCreateControllerRequest req
     ) {
-        replyAppService.create(new ReplyCreateServiceRequest(postId, req.content()));
+        replyAppService.create(userId, new ReplyCreateServiceRequest(postId, req.content()));
         return ApiResponse.toResponseEntity(ApiResponse.success(HttpStatus.CREATED));
     }
 
     // Update
     @PutMapping("/replies/{replyId}")
     public ResponseEntity<ApiResponse<Void>> update(
+        @LoggedInUser Long userId,
         @PathVariable Long replyId,
         @RequestBody @Valid ReplyUpdateControllerRequest req
     ) {
-        replyAppService.update(new ReplyUpdateServiceRequest(replyId, req.content()));
+        replyAppService.update(userId, new ReplyUpdateServiceRequest(replyId, req.content()));
         return ApiResponse.toResponseEntity(ApiResponse.success(HttpStatus.OK));
     }
 
