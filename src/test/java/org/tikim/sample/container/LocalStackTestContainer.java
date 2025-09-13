@@ -32,10 +32,10 @@ public final class LocalStackTestContainer implements TestContainer {
     private final Map<String, String> queueArnMap = new HashMap<>();
 
     // 이름만 변경 (reply 이벤트 → post owner 알림 / reply author 액션)
-    private final String topicName = "test-board-reply-sns";
+    private final String topicName = "local-board-reply-sns";
     private final List<String> queueNames = List.of(
-        "test-board-post-notify-sqs",
-        "test-board-reply-action-sqs"
+        "local-board-post-notify-sqs",
+        "local-board-reply-action-sqs"
     );
 
     private LocalStackTestContainer() {
@@ -132,8 +132,8 @@ public final class LocalStackTestContainer implements TestContainer {
 
         // 새 이름으로 매핑
         registry.add("aws.sns.topics.board-reply", () -> topicArn);
-        registry.add("aws.sqs.queues.post-notify", () -> queueUrlMap.get("test-board-post-notify-sqs"));
-        registry.add("aws.sqs.queues.reply-action", () -> queueUrlMap.get("test-board-reply-action-sqs"));
+        registry.add("aws.sqs.queues.post-notify", () -> queueUrlMap.get("local-board-post-notify-sqs"));
+        registry.add("aws.sqs.queues.reply-action", () -> queueUrlMap.get("local-board-reply-action-sqs"));
     }
 
 }

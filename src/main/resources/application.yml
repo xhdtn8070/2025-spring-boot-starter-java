@@ -28,5 +28,5 @@ openapi:
 outbox:
   relay:
     batch-size: 20
-    fixed-delay: 10000      # ms
-    initial-delay: 5000    # ms
+    fixed-delay: 1000      # ms
+    initial-delay: 1000    # ms
