@@ -14,9 +14,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.tikim.sample.domain.board.reply.event.ReplyEventPublisher;
+import org.tikim.sample.domain.outbox.dto.ReplyCreatedOutboxPayload;
 import org.tikim.sample.domain.outbox.entity.OutboxEvent;
-import org.tikim.sample.domain.outbox.entity.dto.OutboxEventType;
-import org.tikim.sample.domain.outbox.entity.dto.ReplyCreatedOutboxPayload;
 import org.tikim.sample.domain.outbox.repository.OutboxEventRepository;
 
 @Slf4j
@@ -43,7 +42,7 @@ public class OutboxRelayService {
         for (OutboxEvent e : events) {
             try {
                 switch (e.getEventType()) {
-                    case REPLY_CREATE -> {
+                    case REPLY_CREATED -> {
                         var p = objectMapper.readValue(e.getPayload(), ReplyCreatedOutboxPayload.class);
                         replyEventPublisher.publishReplyCreated(p);  // 한 번만 발행
                     }

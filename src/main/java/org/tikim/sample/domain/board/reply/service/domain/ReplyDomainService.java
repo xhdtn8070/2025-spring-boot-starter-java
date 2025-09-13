@@ -12,6 +12,9 @@ import org.tikim.sample.domain.board.reply.exception.ReplyException;
 import org.tikim.sample.domain.board.reply.repository.ReplyDslRepository;
 import org.tikim.sample.domain.board.reply.repository.ReplyRepository;
 import org.tikim.sample.domain.board.reply.service.domain.dto.*;
+import org.tikim.sample.domain.outbox.dto.ReplyCreatedOutboxPayload;
+import org.tikim.sample.domain.outbox.entity.dto.OutboxEventType;
+import org.tikim.sample.domain.outbox.port.OutboxAppender;
 import org.tikim.sample.global.exception.enums.CriticalLevel;
 import org.tikim.sample.global.exception.enums.ErrorMessage;
 import org.tikim.sample.global.vaildation.util.ValidationUtil;
@@ -23,6 +26,7 @@ public class ReplyDomainService {
     private final ReplyRepository replyRepository;
     private final PostRepository postRepository;
     private final ReplyDslRepository replyDslRepository;
+    private final OutboxAppender outboxAppender;
 
     @Transactional
     public void create(ReplyCreateDomainRequest req) {
@@ -31,6 +35,12 @@ public class ReplyDomainService {
             .orElseThrow(() -> new ReplyException(ErrorMessage.REPLY_NOT_EXIST, CriticalLevel.NON_CRITICAL));
         Reply reply = Reply.of(post, req);
         replyRepository.save(reply);
+
+        // 같은 트랜잭션 안에서 Outbox 기록!
+        ReplyCreatedOutboxPayload payload = new ReplyCreatedOutboxPayload(
+            reply.getId(), post.getId(), post.getAuthorId(), reply.getAuthorId()
+        );
+        outboxAppender.append(OutboxEventType.REPLY_CREATED, payload);
     }
 
     @Transactional

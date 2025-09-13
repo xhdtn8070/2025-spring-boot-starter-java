@@ -1,33 +1,47 @@
 package org.tikim.sample.domain.board.post.event;
 
 import io.awspring.cloud.sqs.annotation.SqsListener;
-import io.awspring.cloud.sqs.listener.SqsHeaders; // ← 요기!
+import io.awspring.cloud.sqs.listener.SqsHeaders;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.Header;
-import org.springframework.messaging.handler.annotation.Headers;
 import org.springframework.stereotype.Component;
 import software.amazon.awssdk.services.sqs.model.Message;
 
-import java.util.Map;
+import org.tikim.sample.domain.board.post.service.application.PostApplicationService;
+import org.tikim.sample.domain.board.post.service.application.dto.PostDetailServiceResponse;
+import org.tikim.sample.domain.outbox.dto.ReplyCreatedOutboxPayload;
+import org.tikim.sample.global.event.sqs.dto.SnsParsedMessage;
+import org.tikim.sample.global.event.sqs.util.SnsBodyParser;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class PostNotifyListener {
 
-    @SqsListener(value = "local-board-post-notify-sqs")
-    public void onMessage(
-            String body,
-            @Header(SqsHeaders.SQS_SOURCE_DATA_HEADER) Message sqsMessage, // 원본 SQS 메시지
-            @Headers Map<String, Object> headers
-    ) {
-        log.info("[POST_NOTIFY] id={}, body={}", sqsMessage.messageId(), body);
+    private final SnsBodyParser parser;
+    private final PostApplicationService postApplicationService;
 
-        // SNS Message Attributes를 쓰려면 아래처럼 원본에서 읽을 수 있어요
-        var attrs = sqsMessage.messageAttributes();
-        var event = attrs.get("event");
-        var audience = attrs.get("audience");
-        log.debug("[POST_NOTIFY] attrs event={}, audience={}", event, audience);
+    @SqsListener("local-board-post-notify-sqs")
+    public void onMessage(String body,
+        @Header(SqsHeaders.SQS_SOURCE_DATA_HEADER) Message sqsMessage) {
+        try {
+            SnsParsedMessage<ReplyCreatedOutboxPayload> m = parser.parse(body, ReplyCreatedOutboxPayload.class);
+            ReplyCreatedOutboxPayload p = m.payload();
 
-        // TODO: 알림 처리
+            PostDetailServiceResponse post = postApplicationService.get(p.postId());
+            Long postOwnerId = post.authorId();
+
+
+            log.info("[POST_NOTIFY] sqsId={}, snsId={}, postId={}, replyId={}, postOwnerId={}, replyAuthorId={}, attrs={}",
+                sqsMessage.messageId(), m.snsMessageId(),
+                p.postId(), p.replyId(), p.postOwnerId(), p.replyAuthorId(), m.messageAttributes());
+            // 예: 알림 처리
+            // notifyService.notifyPostOwner(postOwnerId, p.postId(), p.replyId(), p.authorId(), m.messageAttributes());
+
+        } catch (Exception e) {
+            log.error("[POST_NOTIFY] handle failed. id={}, body={}", sqsMessage.messageId(), body, e);
+            throw new IllegalStateException("PostNotifyListener failed", e);
+        }
     }
 }

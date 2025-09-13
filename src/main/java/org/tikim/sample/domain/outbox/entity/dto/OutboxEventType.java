@@ -6,6 +6,6 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum OutboxEventType {
-    REPLY_CREATE,
+    REPLY_CREATED,
 
 }

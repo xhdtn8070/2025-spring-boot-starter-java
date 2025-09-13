@@ -24,3 +24,9 @@ openapi:
     title: "TIKIM API"
     version: "1.0.0"
     description: "TIKIM API Documentation"
+
+outbox:
+  relay:
+    batch-size: 20
+    fixed-delay: 10000      # ms
+    initial-delay: 5000    # ms

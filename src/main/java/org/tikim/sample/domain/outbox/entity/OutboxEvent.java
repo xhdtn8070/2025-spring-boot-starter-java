@@ -39,6 +39,14 @@ public class OutboxEvent extends BaseEntity {
     @Column(name = "error_reason", columnDefinition = "TEXT")
     private String errorReason;
 
+    // OutboxEvent.java (메서드만 추가)
+    public static OutboxEvent of(OutboxEventType type, String payload) {
+        return OutboxEvent.builder()
+            .eventType(type)
+            .payload(payload)
+            .build();
+    }
+
     //성공 했을때 부르는 함수
     public void markAsSuccess() {
         this.isSuccess = true;

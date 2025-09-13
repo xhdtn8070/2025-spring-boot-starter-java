@@ -6,6 +6,7 @@ import org.tikim.sample.domain.board.post.service.domain.dto.PostDetailDomainRes
 
 public record PostDetailServiceResponse(
     Long id,
+    Long authorId,
     String title,
     String content,
     LocalDateTime createdAt,
@@ -14,6 +15,7 @@ public record PostDetailServiceResponse(
   public static PostDetailServiceResponse of(PostDetailDomainResponse post) {
         return new PostDetailServiceResponse(
             post.id(),
+            post.authorId(),
             post.title(),
             post.content(),
             post.createdAt(),

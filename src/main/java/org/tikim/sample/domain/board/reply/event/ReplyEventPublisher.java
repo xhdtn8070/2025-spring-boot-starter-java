@@ -4,7 +4,7 @@ package org.tikim.sample.domain.board.reply.event;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.tikim.sample.domain.outbox.entity.dto.ReplyCreatedOutboxPayload;
+import org.tikim.sample.domain.outbox.dto.ReplyCreatedOutboxPayload;
 import org.tikim.sample.global.event.sns.properties.SnsProperties;
 import software.amazon.awssdk.services.sns.SnsClient;
 import software.amazon.awssdk.services.sns.model.PublishRequest;
